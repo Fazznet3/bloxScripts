@@ -1,136 +1,209 @@
--- Load OrionLib
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+-- ESP SETTINGS
+getgenv().EspSettings = {
+    TeamCheck = false,
+    ToggleKey = "RightAlt",
+    RefreshRate = 10,
+    MaximumDistance = 500,
+    FaceCamera = false,
+    AlignPoints = false,
+    MouseVisibility = {
+        Enabled = true,
+        Radius = 60,
+        Transparency = 0.3,
+        Method = "Hover",
+        HoverRadius = 50,
+        Selected = {
+            Boxes = true,
+            Tracers = true,
+            Names = true,
+            Skeletons = true,
+            HealthBars = true,
+            HeadDots = true,
+            LookTracers = true
+        }
+    },
+    Highlights = {
+        Enabled = false,
+        Players = {},
+        Transparency = 1,
+        Color = Color3.fromRGB(255, 150, 0),
+        AlwaysOnTop = true
+    },
+    NPC = {
+        Color = Color3.fromRGB(150,150,150),
+        Transparency = 1,
+        RainbowColor = false,
+        Overrides = {
+            Boxes = true,
+            Tracers = true,
+            Names = true,
+            Skeletons = true,
+            HealthBars = true,
+            HeadDots = true,
+            LookTracers = true
+        }
+    },
+    Boxes = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(255,255,255),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        OutlineThickness = 1,
+        Thickness = 1
+    },
+    Tracers = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(255,255,255),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        OutlineThickness = 1,
+        Origin = "Top",
+        Thickness = 1
+    },
+    Names = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(255,255,255),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        Font = Drawing.Fonts.UI,
+        Size = 18,
+        ShowDistance = false,
+        ShowHealth = true,
+        UseDisplayName = false,
+        DistanceDataType = "m",
+        HealthDataType = "Percentage"
+    },
+    Skeletons = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(255,255,255),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        OutlineThickness = 1,
+        Thickness = 1
+    },
+    HealthBars = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(0,255,0),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        OutlineThickness = 1,
+        Origin = "None",
+        OutlineBarOnly = true
+    },
+    HeadDots = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(255,255,255),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        OutlineThickness = 1,
+        Thickness = 1,
+        Filled = false,
+        Scale = 1
+    },
+    LookTracers = {
+        Enabled = true,
+        Transparency = 1,
+        Color = Color3.fromRGB(255,255,255),
+        UseTeamColor = true,
+        RainbowColor = false,
+        Outline = true,
+        OutlineColor = Color3.fromRGB(0,0,0),
+        OutlineThickness = 1,
+        Thickness = 1,
+        Length = 5
+    }
+}
 
-local Window = OrionLib:MakeWindow({Name = "Universal Script GUI", HidePremium = false, IntroText = "Universal Hub", SaveConfig = true, ConfigFolder = "UniversalHub"})
+-- Load ESP
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Dragon5819/Main/main/esp", "UniversalEsp"))()
 
 ---------------------------------------------------------------------
--- ESP TAB
-local EspTab = Window:MakeTab({
-    Name = "ESP",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+-- AIMBOT SETTINGS
+getgenv().AimbotSettings = {
+    Enabled = true,
+    TeamCheck = true,
+    AimPart = "Head",
+    Smoothness = 0.2,
+    FOV = 120,
+    ToggleKey = "RightShift"
+}
 
-EspTab:AddToggle({
-    Name = "ESP Boxes",
-    Default = getgenv().EspSettings.Boxes.Enabled,
-    Callback = function(Value)
-        getgenv().EspSettings.Boxes.Enabled = Value
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local aimbotEnabled = false
+
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if not gpe and input.KeyCode == Enum.KeyCode[getgenv().AimbotSettings.ToggleKey] then
+        aimbotEnabled = not aimbotEnabled
     end
-})
+end)
 
-EspTab:AddToggle({
-    Name = "ESP Tracers",
-    Default = getgenv().EspSettings.Tracers.Enabled,
-    Callback = function(Value)
-        getgenv().EspSettings.Tracers.Enabled = Value
-    end
-})
-
-EspTab:AddToggle({
-    Name = "ESP Skeletons",
-    Default = getgenv().EspSettings.Skeletons.Enabled,
-    Callback = function(Value)
-        getgenv().EspSettings.Skeletons.Enabled = Value
-    end
-})
-
-EspTab:AddToggle({
-    Name = "ESP Names",
-    Default = getgenv().EspSettings.Names.Enabled,
-    Callback = function(Value)
-        getgenv().EspSettings.Names.Enabled = Value
-    end
-})
-
-EspTab:AddSlider({
-    Name = "ESP Max Distance",
-    Min = 100,
-    Max = 2000,
-    Default = getgenv().EspSettings.MaximumDistance,
-    Increment = 50,
-    Callback = function(Value)
-        getgenv().EspSettings.MaximumDistance = Value
-    end
-})
-
----------------------------------------------------------------------
--- AIMBOT TAB
-local AimbotTab = Window:MakeTab({
-    Name = "Aimbot",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-AimbotTab:AddToggle({
-    Name = "Enable Aimbot",
-    Default = getgenv().AimbotSettings.Enabled,
-    Callback = function(Value)
-        getgenv().AimbotSettings.Enabled = Value
-    end
-})
-
-AimbotTab:AddToggle({
-    Name = "Team Check",
-    Default = getgenv().AimbotSettings.TeamCheck,
-    Callback = function(Value)
-        getgenv().AimbotSettings.TeamCheck = Value
-    end
-})
-
-AimbotTab:AddSlider({
-    Name = "Aimbot Smoothness",
-    Min = 0,
-    Max = 1,
-    Default = getgenv().AimbotSettings.Smoothness,
-    Increment = 0.05,
-    Callback = function(Value)
-        getgenv().AimbotSettings.Smoothness = Value
-    end
-})
-
-AimbotTab:AddSlider({
-    Name = "Aimbot FOV",
-    Min = 10,
-    Max = 500,
-    Default = getgenv().AimbotSettings.FOV,
-    Increment = 10,
-    Callback = function(Value)
-        getgenv().AimbotSettings.FOV = Value
-    end
-})
-
-AimbotTab:AddDropdown({
-    Name = "Aim Part",
-    Default = getgenv().AimbotSettings.AimPart,
-    Options = {"Head", "HumanoidRootPart", "Torso"},
-    Callback = function(Value)
-        getgenv().AimbotSettings.AimPart = Value
-    end
-})
-
----------------------------------------------------------------------
--- MISC TAB (ONE HIT KILL)
-local MiscTab = Window:MakeTab({
-    Name = "Misc",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-MiscTab:AddButton({
-    Name = "Enable One Hit Kill",
-    Callback = function()
-        for i, v in pairs(getgc(true)) do
-            if type(v) == "table" and rawget(v,"FireRate") then
-                v.FireRate = 5000
-                v.Range = Vector2.new(99999999, 99999999)
-                v.MagnetStrength = 1000
-                v.AmmoCapacity = math.huge
-                v.Damage = 999999
+local function getClosestPlayer()
+    local closestPlayer, shortestDistance = nil, getgenv().AimbotSettings.FOV
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            if getgenv().AimbotSettings.TeamCheck and player.Team == LocalPlayer.Team then
+                continue
+            end
+            local pos, onScreen = Camera:WorldToViewportPoint(player.Character.HumanoidRootPart.Position)
+            if onScreen then
+                local mousePos = UserInputService:GetMouseLocation()
+                local distance = (Vector2.new(pos.X, pos.Y) - mousePos).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestPlayer = player
+                end
             end
         end
     end
-})
+    return closestPlayer
+end
+
+-- Aimbot Loop
+RunService.RenderStepped:Connect(function()
+    if aimbotEnabled and getgenv().AimbotSettings.Enabled then
+        local target = getClosestPlayer()
+        if target and target.Character:FindFirstChild(getgenv().AimbotSettings.AimPart) then
+            local aimPart = target.Character[getgenv().AimbotSettings.AimPart]
+            local targetPos = Camera:WorldToViewportPoint(aimPart.Position)
+            local mousePos = UserInputService:GetMouseLocation()
+            local aimPos = Vector2.new(targetPos.X, targetPos.Y)
+            local newPos = mousePos:Lerp(aimPos, getgenv().AimbotSettings.Smoothness)
+            mousemoverel((newPos.X - mousePos.X), (newPos.Y - mousePos.Y))
+        end
+    end
+end)
 
 ---------------------------------------------------------------------
-OrionLib:Init()
+-- ONE HIT KILL
+for i, v in pairs(getgc(true)) do
+    if type(v) == "table" and rawget(v,"FireRate") then
+        v.FireRate = 5000
+        v.Range = Vector2.new(99999999, 99999999)
+        v.MagnetStrength = 1000
+        v.AmmoCapacity = math.huge
+        v.Damage = 999999 -- ini bikin 1 hit kill
+    end
+end
